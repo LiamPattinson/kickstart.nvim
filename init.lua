@@ -121,6 +121,12 @@ end)
 -- Enable break indent
 vim.o.breakindent = true
 
+-- Set preferred space/tab handling
+vim.o.tabstop = 2
+vim.o.softtabstop = 2
+vim.o.shiftwidth = 2
+vim.o.expandtab = true
+
 -- Save undo history
 vim.o.undofile = true
 
@@ -691,10 +697,16 @@ require('lazy').setup({
           settings = {
             Lua = {
               completion = {
+                enable = true,
                 callSnippet = 'Replace',
               },
               -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
-              -- diagnostics = { disable = { 'missing-fields' } },
+              diagnostics = {
+                disable = {
+                  'missing-fields',
+                  'lowercase-global',
+                },
+              },
             },
           },
         },
