@@ -225,6 +225,39 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
+-- Tab size depend on file type
+local autotab_group = vim.api.nvim_create_augroup('auto-tab', { clear = true })
+
+vim.api.nvim_create_autocmd('FileType', {
+  group = autotab_group,
+  pattern = { 'python', 'rust' },
+  callback = function()
+    vim.bo.tabstop = 4
+    vim.bo.softtabstop = 4
+    vim.bo.shiftwidth = 4
+  end,
+})
+
+vim.api.nvim_create_autocmd('FileType', {
+  group = autotab_group,
+  pattern = { 'python', 'rust' },
+  callback = function()
+    vim.bo.tabstop = 4
+    vim.bo.softtabstop = 4
+    vim.bo.shiftwidth = 4
+  end,
+})
+
+vim.api.nvim_create_autocmd('FileType', {
+  group = autotab_group,
+  pattern = { 'rst' },
+  callback = function()
+    vim.bo.tabstop = 3
+    vim.bo.softtabstop = 3
+    vim.bo.shiftwidth = 3
+  end,
+})
+
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
@@ -700,11 +733,16 @@ require('lazy').setup({
                 enable = true,
                 callSnippet = 'Replace',
               },
-              -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
               diagnostics = {
                 disable = {
                   'missing-fields',
                   'lowercase-global',
+                },
+              },
+              format = {
+                defaultConfig = {
+                  intent_style = 'space',
+                  indent_size = 2,
                 },
               },
             },
@@ -733,6 +771,7 @@ require('lazy').setup({
 
       require('mason-lspconfig').setup {
         ensure_installed = {}, -- explicitly set to an empty table (Kickstart populates installs via mason-tool-installer)
+        automatic_enable = true,
         automatic_installation = false,
         handlers = {
           function(server_name)
@@ -943,7 +982,7 @@ require('lazy').setup({
       -- cursor location to LINE:COLUMN
       ---@diagnostic disable-next-line: duplicate-set-field
       statusline.section_location = function()
-        return '%2l:%-2v'
+        return '%2l:%-2v(%p%%)'
       end
 
       -- ... and there is more!
@@ -1023,6 +1062,20 @@ require('lazy').setup({
     },
   },
 })
+
+-- FORTITUDE LSP
+-- TODO: replace with Mason config when ready
+--
+-- vim.lsp.config("fortitude", {
+--   cmd = { "fortitude", "server" },
+--   filetypes = { "fortran" },
+--   init_options = {
+--     settings = {
+--       select = { "error", "correctness" },
+--     },
+--   },
+-- })
+-- vim.lsp.enable("fortitude")
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
